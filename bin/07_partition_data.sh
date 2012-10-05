@@ -4,7 +4,6 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 tmp_dir=$script_dir/tmp
 
 input_file=$tmp_dir/featured_snp
-output_file=$tmp_dir/featured_snp
 
 shuffled_featured_snp=$tmp_dir/shuffled_featured_snp
 
@@ -51,8 +50,8 @@ shuf $input_file > $shuffled_featured_snp
 for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y
 do
     #for equally distributed both in chromosome and class
-    grep "0$" $shuffled_featured_snp | grep $i"|" | separate_training_dataset
-    grep "1$" $shuffled_featured_snp | grep $i"|" | separate_training_dataset
+    grep "0$" $shuffled_featured_snp | grep "^"$i"|" | separate_training_dataset
+    grep "1$" $shuffled_featured_snp | grep "^"$i"|" | separate_training_dataset
 done
 
 sort -k1 $tmp_training_dataset > $training_dataset

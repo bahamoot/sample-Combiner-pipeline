@@ -25,12 +25,12 @@ tmp_join5=$tmp_dir/tmp_join5
 
 
 echo 'Filtering using Effect Predictors . . . '
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_sift   $input_file $annovar_humandb_dir -score_threshold 0
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_pp2    $input_file $annovar_humandb_dir -score_threshold 0
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_phylop $input_file $annovar_humandb_dir -score_threshold 0
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_lrt    $input_file $annovar_humandb_dir -score_threshold 0
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_mt     $input_file $annovar_humandb_dir -score_threshold 0
-#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_gerp++ $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_sift   $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_pp2    $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_phylop $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_lrt    $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_mt     $input_file $annovar_humandb_dir -score_threshold 0
+$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_gerp++ $input_file $annovar_humandb_dir -score_threshold 0
 
 echo 'Formating result from Effect Predictors . . . '
 awk -F'\t' '{ printf "%s\t%06.3f\t%d\t%d\t%d\t%s\t%s\n", $8, $2, $3, $4, $5, $6, $7 }' $input_file.hg19_ljb_sift_dropped   | sort -k1 > $tmp_sift
