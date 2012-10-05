@@ -7,8 +7,7 @@ perl_annotate_variation=$annovar_dir/annotate_variation.pl
 tmp_dir=$script_dir/tmp
 
 input_file=$tmp_dir/non_duplicated_snp135
-neutral_output_file=$tmp_dir/feature_neutral_snp
-pathogenic_output_file=$tmp_dir/feature_pathogenic_snp
+output_file=$tmp_dir/featured_snp
 
 tmp_sift=$tmp_dir/snp135_sift
 tmp_pp2=$tmp_dir/snp135_pp2
@@ -25,30 +24,13 @@ tmp_join5=$tmp_dir/tmp_join5
 
 
 
-: <<'END'
-
-
-perl_parser=$script_dir/parse_neutral_training_data.pl
-reference_file=$annovar_humandb_dir/hg19_refGene.txt
-
-tmp_avdb1=$tmp_dir/raw_neutral_data1.avdb
-tmp_avdb2=$tmp_dir/raw_neutral_data2.avdb
-input_file=$tmp_dir/raw_neutral_data3.avdb
-
-END
-
-
-: <<'END'
-
 echo 'Filtering using Effect Predictors . . . '
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_sift   $input_file $annovar_humandb_dir -score_threshold 0
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_pp2    $input_file $annovar_humandb_dir -score_threshold 0
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_phylop $input_file $annovar_humandb_dir -score_threshold 0
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_lrt    $input_file $annovar_humandb_dir -score_threshold 0
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_mt     $input_file $annovar_humandb_dir -score_threshold 0
-$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_gerp++ $input_file $annovar_humandb_dir -score_threshold 0
-
-END
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_sift   $input_file $annovar_humandb_dir -score_threshold 0
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_pp2    $input_file $annovar_humandb_dir -score_threshold 0
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_phylop $input_file $annovar_humandb_dir -score_threshold 0
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_lrt    $input_file $annovar_humandb_dir -score_threshold 0
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_mt     $input_file $annovar_humandb_dir -score_threshold 0
+#$perl_annotate_variation -filter -buildver hg19 -dbtype ljb_gerp++ $input_file $annovar_humandb_dir -score_threshold 0
 
 echo 'Formating result from Effect Predictors . . . '
 awk -F'\t' '{ printf "%s\t%06.3f\t%d\t%d\t%d\t%s\t%s\n", $8, $2, $3, $4, $5, $6, $7 }' $input_file.hg19_ljb_sift_dropped   | sort -k1 > $tmp_sift
@@ -65,8 +47,7 @@ join -t $'\t' -a 1 -a 2 -j 1 -e NULL -o 0,2.2,2.3,2.4,1.2 $tmp_phylop $tmp_join2
 join -t $'\t' -a 1 -a 2 -j 1 -e NULL -o 0,2.2,2.3,2.4,2.5,1.2 $tmp_lrt $tmp_join3 > $tmp_join4
 join -t $'\t' -a 1 -a 2 -j 1 -e NULL -o 0,2.2,2.3,2.4,2.5,2.6,1.2 $tmp_mt $tmp_join4 | uniq | grep -v "NULL" > $tmp_join5
 
-grep "^0" $tmp_join5 | sed 's/$/\t0/g' > $neutral_output_file
-grep "^1" $tmp_join5 | sed 's/$/\t1/g' >> $pathogenic_output_file
+grep "^0" $tmp_join5 | sed 's/$/\t0/g' | sed 's/^0|//g' > $output_file
+grep "^1" $tmp_join5 | sed 's/$/\t1/g' | sed 's/^1|//g' >> $output_file
 
-#sed 's/$/\t0/g'
 
